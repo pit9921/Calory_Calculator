@@ -64,7 +64,10 @@ del df_grouped['Menge']
 
 
 # %%
-delta = df_grouped['Kalorien'].mean() - df_grouped["Kalorien"].iloc[-1]
+#delta = df_grouped['Kalorien'].mean() - df_grouped["Kalorien"].iloc[-1]
+
+calorien_limit = 2300
+delta = calorien_limit - df_grouped["Kalorien"].iloc[-1]
 #delta
 
 
@@ -121,16 +124,41 @@ else:
 today_date = df["Datum"].iloc[-1]
 today_data = df[(df['Datum']==today_date)]
 
+today_data = today_data.round(1)
+
+# values with "gram"
+today_data1 = pd.concat([today_data,pd.DataFrame(today_data.sum(axis=0),columns=['Grand Total']).T])
+today_data1 = today_data1[['Fett','Kohlehydrate','Protein']]
+today_data1 = today_data1.tail(1)
+today_data1 = today_data1.astype(str).apply(lambda x: x.replace('.0',''))
+today_data1["Fett"] = pd.to_numeric(today_data1["Fett"])
+today_data1["Kohlehydrate"] = pd.to_numeric(today_data1["Kohlehydrate"])
+today_data1["Protein"] = pd.to_numeric(today_data1["Protein"])
+today_data1['Fett'] = today_data1['Fett'].round(decimals = 1)
+today_data1['Kohlehydrate'] = today_data1['Kohlehydrate'].round(decimals = 1)
+today_data1['Protein'] = today_data1['Protein'].round(decimals = 1)
+today_data1['Fett'] = today_data1['Fett'].astype(str) + 'g'
+today_data1['Kohlehydrate'] = today_data1['Kohlehydrate'].astype(str) + 'g'
+today_data1['Protein'] = today_data1['Protein'].astype(str) + 'g'
+Fett = today_data1['Fett'].iloc[0]
+Kohlehydrate = today_data1['Kohlehydrate'].iloc[0]
+Protein = today_data1['Protein'].iloc[0]
+list = [Fett, Kohlehydrate, Protein]
+
+
+Total_protein = today_data['Protein'].sum()
+
+
 labels = ['Fett','Carb','Protein']
 values = [today_data['Fett'].sum(), today_data['Kohlehydrate'].sum(), today_data['Protein'].sum()]
 colors = ['#f8be6a', '#60bbce', '#5d64bf', '#fa8126', '#3b7eb5', '#a6a6a6']
 
 # Use `hole` to create a donut-like pie chart
-fig = go.Figure(data=[go.Pie(labels=labels, values=values, textinfo='label+percent', pull=[0.01, 0.01, 0.01],
+fig = go.Figure(data=[go.Pie(labels=labels, values=values, text=list, textinfo='label+percent+text', pull=[0.01, 0.01, 0.05],
                              rotation=125,
                              insidetextorientation='horizontal', hole=.55)])
 
-fig.update_traces(hoverinfo='label+percent', textfont_size=12,
+fig.update_traces(hoverinfo='label+percent+text', textfont_size=12,
                   marker=dict(colors=colors))
 
 #fig.update_layout(showlegend=False)
@@ -145,16 +173,45 @@ fig.update_layout(legend=dict(
 
 fig.update_layout(margin=dict(t=0, b=0, l=0, r=0))
 
+
+if Total_protein>130:
+    fig.update_layout(
+        # Add annotations in the center of the donut pies.
+        annotations=[dict(text='Proteine OK', x=0.5, y=0.52, font_size=20, font_color="#5d64bf", showarrow=False),
+                    dict(text='Referenz: 130g', x=0.5, y=0.46, font_size=14, font_color="#5d64bf", showarrow=False)])
+else:
+    fig.update_layout(
+        # Add annotations in the center of the donut pies.
+        annotations=[dict(text='Zu wenig Proteine', x=0.5, y=0.52, font_size=20, font_color="#5d64bf", showarrow=False),
+                    dict(text='Referenz: 130g', x=0.5, y=0.46, font_size=14, font_color="#5d64bf", showarrow=False)])    
+
 #fig.show()
 
 # %%
 # ---- MAINPAGE ----
 
+
+
 st.set_page_config(
-    page_title="Real-Time Data Science Dashboard",
+    page_title="Kalorienverbrauch App",
     page_icon="✅",
     layout="wide",
 )
+
+
+# Remove whitespace from the top of the page and sidebar
+st.markdown("""
+        <style>
+               .css-18e3th9 {
+                    padding-top: 0rem;
+                    padding-bottom: 10rem;
+                }
+               .css-1d391kg {
+                    padding-top: 3.5rem;
+                    padding-bottom: 3.5rem;
+                }
+        </style>
+        """, unsafe_allow_html=True)
 
 
 with open('style.css') as f:
@@ -181,11 +238,13 @@ hide_table_row_index = """
 st.markdown(hide_table_row_index, unsafe_allow_html=True)
 #################################################################
 
-st.subheader("Fehlende Eingaben:")
+#st.subheader("Fehlende Eingaben:")
 
 if filtered_df.empty:
-    st.write("Alle Mahlzeiten in der DB erhalten.  \n Angezeigte Ergebnisse sind relevant.")
+#    st.write("Alle Mahlzeiten in der DB erhalten.  \n Angezeigte Ergebnisse sind relevant.")
+    st.success('Alle Mahlzeiten in der DB erhalten.  \n Angezeigte **Ergebnisse** sind **relevant!**')
 else:
+    st.error("Folgende Gerichte **müssen** noch vor der Auswertung in der Datenbank **gepflegt werden!**")
     st.table(filtered_df)
 
 st.markdown("#")
@@ -194,7 +253,7 @@ st.markdown("#")
 # Row B
 b1, b2, b3 = st.columns(3)
 b1.metric("Datum", df["Datum"].iloc[-1])
-b2.metric("Kalorien am Tag", round(df_grouped["Kalorien"].iloc[-1]))
+b2.metric("Kalorien am Tag (Soll: 2300kcal)", round(df_grouped["Kalorien"].iloc[-1]))
 
 if delta < 0:
     b3.metric("Übrige Kalorien", abs(round(delta)))   # noch oder zu viel
@@ -213,8 +272,10 @@ st.subheader("Empfohlene Mahlzeit")
 
 # Empfohlene Mahlzeit..
 if first_meal.empty:
-    st.write("Kalorienverbrauch überschreitet.  \nAn diesem Tag **nicht mehr** konsumieren.")
+#    st.write("Kalorienverbrauch überschreitet.  \nAn diesem Tag **nicht mehr** konsumieren.")
+    st.error("Kalorienverbrauch überschreitet.  \nAn diesem Tag **nicht mehr** konsumieren.")
 else:
+    st.success('Folgende Mahlzeit darf heute noch aufgenommen werden (basierend auf Kalorien).')
     st.table(first_meal)
 
 
