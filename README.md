@@ -8,7 +8,7 @@ The menu is entered into Google Tabs, which also contains a nutritional table of
 
 --
 
-Link to the app: 
+Link to the app: https://pit9921-calory-calculator-app-283b0x.streamlitapp.com/
 
 --
 
