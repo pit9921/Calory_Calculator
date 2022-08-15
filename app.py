@@ -66,7 +66,7 @@ del df_grouped['Menge']
 # %%
 #delta = df_grouped['Kalorien'].mean() - df_grouped["Kalorien"].iloc[-1]
 
-calorien_limit = 2300
+calorien_limit = 2879
 delta = calorien_limit - df_grouped["Kalorien"].iloc[-1]
 #delta
 
@@ -174,18 +174,34 @@ fig.update_layout(legend=dict(
 fig.update_layout(margin=dict(t=0, b=0, l=0, r=0))
 
 
-if Total_protein>130:
+if Total_protein>211:
     fig.update_layout(
         # Add annotations in the center of the donut pies.
         annotations=[dict(text='Proteine OK', x=0.5, y=0.52, font_size=20, font_color="#5d64bf", showarrow=False),
-                    dict(text='Referenz: 130g', x=0.5, y=0.46, font_size=14, font_color="#5d64bf", showarrow=False)])
+                    dict(text='Referenz: 211g', x=0.5, y=0.46, font_size=14, font_color="#5d64bf", showarrow=False)])
 else:
     fig.update_layout(
         # Add annotations in the center of the donut pies.
         annotations=[dict(text='Zu wenig Proteine', x=0.5, y=0.52, font_size=20, font_color="#5d64bf", showarrow=False),
-                    dict(text='Referenz: 130g', x=0.5, y=0.46, font_size=14, font_color="#5d64bf", showarrow=False)])    
+                    dict(text='Referenz: 211g', x=0.5, y=0.46, font_size=14, font_color="#5d64bf", showarrow=False)])    
 
 #fig.show()
+
+# %%
+# Weight
+sheet_url = "https://docs.google.com/spreadsheets/d/1S_NB-vJcidtM2m_-2ZAavolLc-S8gFil0vj5s7vZZGo/edit#gid=1161092296"
+
+url_3 = sheet_url.replace('/edit#gid=', '/export?format=csv&gid=')
+df5 = pd.read_csv(url_3, error_bad_lines=False, decimal=',')
+df6 = df5.loc[df5['Tätigkeit'] == "Gewicht"]
+
+fig1 = px.line(df6, x="Datum", y="Wert", markers=True, template="xgridoff", line_shape='spline')
+
+fig1.update_traces( line=dict(color="#f8be6a"))
+fig1.update_layout(title_text='<b>Gewicht - Regelkarte', title_x=0.05)
+
+
+fig1.update_layout(yaxis_title="Gewicht [kg]")
 
 # %%
 # ---- MAINPAGE ----
@@ -253,7 +269,7 @@ st.markdown("#")
 # Row B
 b1, b2, b3 = st.columns(3)
 b1.metric("Datum", df["Datum"].iloc[-1])
-b2.metric("Kalorien am Tag (Soll: 2300kcal)", round(df_grouped["Kalorien"].iloc[-1]))
+b2.metric("Kalorien am Tag (Soll: 2879kcal)", round(df_grouped["Kalorien"].iloc[-1]))
 
 if delta < 0:
     b3.metric("Übrige Kalorien", abs(round(delta)))   # noch oder zu viel
@@ -265,6 +281,10 @@ else:
 st.markdown('#')   
 
 st.plotly_chart(fig, use_container_width=True)
+
+st.markdown('#')  
+
+st.plotly_chart(fig1, use_container_width=True)
 
 st.markdown('#')  
 
