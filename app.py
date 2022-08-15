@@ -203,6 +203,48 @@ fig1.update_layout(title_text='<b>Gewicht - Regelkarte', title_x=0.05)
 
 fig1.update_layout(yaxis_title="Gewicht [kg]")
 
+fig1.update_layout({
+'plot_bgcolor': 'rgba(0, 0, 0, 0)',
+'paper_bgcolor': 'rgba(0, 0, 0, 0)',
+})
+
+# %%
+Total_Protein = today_data['Protein'].sum()
+Total_Kohlehydrate = today_data['Kohlehydrate'].sum()
+Total_Fett = today_data['Fett'].sum()
+Soll_Protein = 211 
+Soll_Kohlehydrate = 281 
+Soll_Fett = 93
+
+# %%
+# create df of aggregation
+data = [['Protein', Total_Protein, Soll_Protein], ['Kohlehydrate', Total_Kohlehydrate, Soll_Kohlehydrate], ['Fett', Total_Fett, Soll_Fett]]
+df6 = pd.DataFrame(data, columns=['Macro', 'Ist', 'Soll'])
+df6['utilization'] = ((df6['Ist'] / df6['Soll'] )*100).round(1)
+df6['utilization'] = df6['utilization'].astype(str) + '%'
+
+# %%
+from plotly.subplots import make_subplots
+fig3 = make_subplots(shared_yaxes=True, shared_xaxes=True)
+fig3.add_bar(y=df6['Macro'],x=df6['Soll'],opacity=0.3,width=0.7,name='Ziel',hovertemplate='%{y}', orientation='h',
+            marker_color=['#5d64bf','#60bbce','#f8be6a'])
+
+#fig3.update_traces(marker_color='rgb(158,202,225)', marker_line_color='rgb(8,48,107)',
+#                  marker_line_width=1.5, opacity=0.6)
+
+fig3.add_bar(y=df6['Macro'],x=df6['Ist'],width=0.5,name='aufgenommen',text=df6['utilization'],
+             textposition='outside', orientation='h', marker_color=['#5d64bf','#60bbce','#f8be6a'])
+
+
+
+fig3.update_layout(xaxis_ticksuffix = 'g')
+fig3.update_layout(barmode='overlay', title= "Hauptnährstoffe des Tages<br><sup>Soll vs. IST Werte</sup>",yaxis_title='Hauptnährstoffe', xaxis_title='Menge')
+
+fig3.update_layout({
+'plot_bgcolor': 'rgba(0, 0, 0, 0)',
+'paper_bgcolor': 'rgba(0, 0, 0, 0)',
+})
+
 # %%
 # ---- MAINPAGE ----
 
@@ -281,6 +323,10 @@ else:
 st.markdown('#')   
 
 st.plotly_chart(fig, use_container_width=True)
+
+st.markdown('#')  
+
+st.plotly_chart(fig3, use_container_width=True)
 
 st.markdown('#')  
 
