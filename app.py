@@ -198,7 +198,7 @@ df6 = df5.loc[df5['Tätigkeit'] == "Gewicht"]
 fig1 = px.line(df6, x="Datum", y="Wert", markers=True, template="xgridoff", line_shape='spline')
 
 fig1.update_traces( line=dict(color="#f8be6a"))
-fig1.update_layout(title_text='<b>Gewicht - Regelkarte', title_x=0.05)
+fig1.update_layout(title_text='Gewicht - Regelkarte', title_x=0.05)
 
 
 fig1.update_layout(yaxis_title="Gewicht [kg]")
@@ -240,10 +240,22 @@ fig3.add_bar(y=df6['Macro'],x=df6['Ist'],width=0.5,name='aufgenommen',text=df6['
 fig3.update_layout(xaxis_ticksuffix = 'g')
 fig3.update_layout(barmode='overlay', title= "Hauptnährstoffe des Tages<br><sup>Soll vs. IST Werte</sup>",yaxis_title='Hauptnährstoffe', xaxis_title='Menge')
 
+fig3.update_layout(showlegend=False)
+
 fig3.update_layout({
 'plot_bgcolor': 'rgba(0, 0, 0, 0)',
 'paper_bgcolor': 'rgba(0, 0, 0, 0)',
 })
+
+
+
+# %%
+# get an actual hour
+import time
+strings = time.strftime("%Y,%m,%d,%H,%M,%S")
+t = strings.split(',')
+numbers = [ int(x) for x in t ]
+actual_hour = numbers[3]
 
 # %%
 # ---- MAINPAGE ----
@@ -337,12 +349,17 @@ st.markdown('#')
 st.subheader("Empfohlene Mahlzeit")
 
 # Empfohlene Mahlzeit..
-if first_meal.empty:
-#    st.write("Kalorienverbrauch überschreitet.  \nAn diesem Tag **nicht mehr** konsumieren.")
-    st.error("Kalorienverbrauch überschreitet.  \nAn diesem Tag **nicht mehr** konsumieren.")
+if actual_hour > 19:
+
+    if first_meal.empty:
+    #    st.write("Kalorienverbrauch überschreitet.  \nAn diesem Tag **nicht mehr** konsumieren.")
+        st.error("Kalorienverbrauch überschreitet.  \nAn diesem Tag **nicht mehr** konsumieren.")
+    else:
+        st.success('Folgende Mahlzeit darf heute noch aufgenommen werden (basierend auf Kalorien).')
+        st.table(first_meal)
+        
 else:
-    st.success('Folgende Mahlzeit darf heute noch aufgenommen werden (basierend auf Kalorien).')
-    st.table(first_meal)
+    st.info('Empfohlene Mahlzeit wird erst nach 19:00 Uhr angezeigt.')
 
 
 # Remove “Made with Streamlit” from bottom of app
