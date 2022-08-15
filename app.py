@@ -359,7 +359,7 @@ if actual_hour > 19:
         st.table(first_meal)
         
 else:
-    st.info('Empfohlene Mahlzeit wird erst nach 19:00 Uhr angezeigt.' + actual_hour)
+    st.info('Empfohlene Mahlzeit wird erst nach 19:00 Uhr angezeigt.')
 
 
 # Remove “Made with Streamlit” from bottom of app
