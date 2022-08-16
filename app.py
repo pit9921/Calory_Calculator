@@ -30,6 +30,7 @@ df1 = pd.read_csv(url_2, error_bad_lines=False, decimal=',')
 # %%
 df['Kalorien'] = (df['Menge'] / (df['Produkt'].map(dict(zip(df1['Produkt'], df1['Referenz']))).fillna(0))) * df['Produkt'].map(dict(zip(df1['Produkt'], df1['Kalorien']))).fillna(0)
 df['Fett'] = (df['Menge'] / (df['Produkt'].map(dict(zip(df1['Produkt'], df1['Referenz']))).fillna(0))) * df['Produkt'].map(dict(zip(df1['Produkt'], df1['Fett']))).fillna(0)
+df['gesätt Fett'] = (df['Menge'] / (df['Produkt'].map(dict(zip(df1['Produkt'], df1['Referenz']))).fillna(0))) * df['Produkt'].map(dict(zip(df1['Produkt'], df1['gesätt Fett']))).fillna(0)
 df['Kohlehydrate'] = (df['Menge'] / (df['Produkt'].map(dict(zip(df1['Produkt'], df1['Referenz']))).fillna(0))) * df['Produkt'].map(dict(zip(df1['Produkt'], df1['Kohlehydrate']))).fillna(0)
 df['Zucker'] = (df['Menge'] / (df['Produkt'].map(dict(zip(df1['Produkt'], df1['Referenz']))).fillna(0))) * df['Produkt'].map(dict(zip(df1['Produkt'], df1['Zucker']))).fillna(0)
 df['Protein'] = (df['Menge'] / (df['Produkt'].map(dict(zip(df1['Produkt'], df1['Referenz']))).fillna(0))) * df['Produkt'].map(dict(zip(df1['Produkt'], df1['Protein']))).fillna(0)
@@ -154,9 +155,9 @@ values = [today_data['Fett'].sum(), today_data['Kohlehydrate'].sum(), today_data
 colors = ['#f8be6a', '#60bbce', '#5d64bf', '#fa8126', '#3b7eb5', '#a6a6a6']
 
 # Use `hole` to create a donut-like pie chart
-fig = go.Figure(data=[go.Pie(labels=labels, values=values, text=list, textinfo='label+percent+text', pull=[0.01, 0.01, 0.05],
+fig = go.Figure(data=[go.Pie(labels=labels, values=values, text=list, textinfo='label+percent+text', pull=[0, 0, 0.2],
                              rotation=125,
-                             insidetextorientation='horizontal', hole=.55)])
+                             insidetextorientation='horizontal')])
 
 fig.update_traces(hoverinfo='label+percent+text', textfont_size=12,
                   marker=dict(colors=colors))
@@ -172,18 +173,6 @@ fig.update_layout(legend=dict(
 ))
 
 fig.update_layout(margin=dict(t=0, b=0, l=0, r=0))
-
-
-if Total_protein>211:
-    fig.update_layout(
-        # Add annotations in the center of the donut pies.
-        annotations=[dict(text='Proteine OK', x=0.5, y=0.52, font_size=20, font_color="#5d64bf", showarrow=False),
-                    dict(text='Referenz: 211g', x=0.5, y=0.46, font_size=14, font_color="#5d64bf", showarrow=False)])
-else:
-    fig.update_layout(
-        # Add annotations in the center of the donut pies.
-        annotations=[dict(text='Zu wenig Proteine', x=0.5, y=0.52, font_size=20, font_color="#5d64bf", showarrow=False),
-                    dict(text='Referenz: 211g', x=0.5, y=0.46, font_size=14, font_color="#5d64bf", showarrow=False)])    
 
 #fig.show()
 
@@ -218,7 +207,7 @@ Soll_Fett = 93
 
 # %%
 # create df of aggregation
-data = [['Protein', Total_Protein, Soll_Protein], ['Kohlehydrate', Total_Kohlehydrate, Soll_Kohlehydrate], ['Fett', Total_Fett, Soll_Fett]]
+data = [['Protein', Total_Protein, Soll_Protein], ['Carb', Total_Kohlehydrate, Soll_Kohlehydrate], ['Fett', Total_Fett, Soll_Fett]]
 df6 = pd.DataFrame(data, columns=['Macro', 'Ist', 'Soll'])
 df6['utilization'] = ((df6['Ist'] / df6['Soll'] )*100).round(1)
 df6['utilization'] = df6['utilization'].astype(str) + '%'
@@ -238,7 +227,7 @@ fig3.add_bar(y=df6['Macro'],x=df6['Ist'],width=0.5,name='aufgenommen',text=df6['
 
 
 fig3.update_layout(xaxis_ticksuffix = 'g')
-fig3.update_layout(barmode='overlay', title= "Hauptnährstoffe des Tages<br><sup>Soll vs. IST Werte</sup>",yaxis_title='Hauptnährstoffe', xaxis_title='Menge')
+fig3.update_layout(barmode='overlay', xaxis_title='Menge')
 
 fig3.update_layout(showlegend=False)
 
@@ -335,9 +324,6 @@ else:
 st.markdown('#')   
 
 st.plotly_chart(fig, use_container_width=True)
-
-st.markdown('#')  
-
 st.plotly_chart(fig3, use_container_width=True)
 
 st.markdown('#')  
