@@ -127,52 +127,31 @@ today_data = df[(df['Datum']==today_date)]
 
 today_data = today_data.round(1)
 
-# values with "gram"
-today_data1 = pd.concat([today_data,pd.DataFrame(today_data.sum(axis=0),columns=['Grand Total']).T])
-today_data1 = today_data1[['Fett','Kohlehydrate','Protein']]
-today_data1 = today_data1.tail(1)
-today_data1 = today_data1.astype(str).apply(lambda x: x.replace('.0',''))
-today_data1["Fett"] = pd.to_numeric(today_data1["Fett"])
-today_data1["Kohlehydrate"] = pd.to_numeric(today_data1["Kohlehydrate"])
-today_data1["Protein"] = pd.to_numeric(today_data1["Protein"])
-today_data1['Fett'] = today_data1['Fett'].round(decimals = 1)
-today_data1['Kohlehydrate'] = today_data1['Kohlehydrate'].round(decimals = 1)
-today_data1['Protein'] = today_data1['Protein'].round(decimals = 1)
-today_data1['Fett'] = today_data1['Fett'].astype(str) + 'g'
-today_data1['Kohlehydrate'] = today_data1['Kohlehydrate'].astype(str) + 'g'
-today_data1['Protein'] = today_data1['Protein'].astype(str) + 'g'
-Fett = today_data1['Fett'].iloc[0]
-Kohlehydrate = today_data1['Kohlehydrate'].iloc[0]
-Protein = today_data1['Protein'].iloc[0]
-list = [Fett, Kohlehydrate, Protein]
+Total_Kalorien= today_data['Kalorien'].sum()
+total_kal_per = ((Total_Kalorien / 2879 ) * 100).round(1)
 
 
-Total_protein = today_data['Protein'].sum()
-
-
-labels = ['Fett','Carb','Protein']
-values = [today_data['Fett'].sum(), today_data['Kohlehydrate'].sum(), today_data['Protein'].sum()]
-colors = ['#f8be6a', '#60bbce', '#5d64bf', '#fa8126', '#3b7eb5', '#a6a6a6']
+labels = ['Kalorien', 'noch aufnehmen']
+values = [Total_Kalorien, (3079 -Total_Kalorien) ]
+colors = ['#a6a6a6', '#f6f6f6']
 
 # Use `hole` to create a donut-like pie chart
-fig = go.Figure(data=[go.Pie(labels=labels, values=values, text=list, textinfo='label+percent+text', pull=[0, 0, 0.2],
-                             rotation=125,
-                             insidetextorientation='horizontal')])
+fig = go.Figure(data=[go.Pie(labels=labels, values=values, 
+                             rotation=180, hole=.7)])
 
-fig.update_traces(hoverinfo='label+percent+text', textfont_size=12,
+fig.update_traces(hoverinfo='label', textfont_size=12,
                   marker=dict(colors=colors))
 
-#fig.update_layout(showlegend=False)
-
-fig.update_layout(legend=dict(
-    orientation="h",
-    yanchor="bottom",
-    y=-0.25,
-    xanchor="center",
-    x=0.5
-))
 
 fig.update_layout(margin=dict(t=0, b=0, l=0, r=0))
+fig.update_traces(textinfo='none')
+
+fig.update_layout(
+        # Add annotations in the center of the donut pies.
+        annotations=[dict(text=str(total_kal_per) + "%", x=0.5, y=0.52, font_size=40, font_color="#5d64bf", showarrow=False),
+                    dict(text=str(Total_Kalorien) + " kcal", x=0.5, y=0.46, font_size=14, font_color="#5d64bf", showarrow=False)])
+
+fig.update_layout(showlegend=False)
 
 #fig.show()
 
@@ -239,12 +218,10 @@ fig3.update_layout({
 
 
 # %%
-# get an actual hour
-import time
-strings = time.strftime("%Y,%m,%d,%H,%M,%S")
-t = strings.split(',')
-numbers = [ int(x) for x in t ]
-actual_hour = numbers[3]
+# get overview table of the last day
+names = [df["Datum"].iloc[-1]]
+df8 = df[df.Datum.isin(names)]
+df8 = df8[['Produkt','Menge','Kalorien']]
 
 # %%
 # ---- MAINPAGE ----
@@ -309,19 +286,7 @@ else:
 st.markdown("#")
 
 
-# Row B
-b1, b2, b3 = st.columns(3)
-b1.metric("Datum", df["Datum"].iloc[-1])
-b2.metric("Kalorien am Tag (Soll: 2879kcal)", round(df_grouped["Kalorien"].iloc[-1]))
-
-if delta < 0:
-    b3.metric("Übrige Kalorien", abs(round(delta)))   # noch oder zu viel
-
-else:
-    b3.metric("Noch zunehmende Kalorien", round(delta))   # noch oder zu viel
-
 # create blank space between objects
-st.markdown('#')   
 
 st.plotly_chart(fig, use_container_width=True)
 st.plotly_chart(fig3, use_container_width=True)
@@ -332,21 +297,9 @@ st.plotly_chart(fig1, use_container_width=True)
 
 st.markdown('#')  
 
-st.subheader("Empfohlene Mahlzeit")
-
-# Empfohlene Mahlzeit..
-if actual_hour > 19:
-
-    if first_meal.empty:
-    #    st.write("Kalorienverbrauch überschreitet.  \nAn diesem Tag **nicht mehr** konsumieren.")
-        st.error("Kalorienverbrauch überschreitet.  \nAn diesem Tag **nicht mehr** konsumieren.")
-    else:
-        st.success('Folgende Mahlzeit darf heute noch aufgenommen werden (basierend auf Kalorien).')
-        st.table(first_meal)
+st.subheader("Aufgenommene Produkte" + str(df["Datum"].iloc[-1]))
+st.table(df8)
         
-else:
-    st.info('Empfohlene Mahlzeit wird erst nach 19:00 Uhr angezeigt.')
-
 
 # Remove “Made with Streamlit” from bottom of app
 hide_streamlit_style = """
