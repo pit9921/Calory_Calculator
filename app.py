@@ -343,13 +343,15 @@ st.plotly_chart(fig1, use_container_width=True)
 st.markdown('#')  
 
 
-text="Aufgenommene Produkte am " + str(df["Datum"].iloc[-1])
+#text="Aufgenommene Produkte am " + str(df["Datum"].iloc[-1])
 
-def example(color1, color2, color3, content):
-     st.markdown(f'<p style="text-align:center;background-image: linear-gradient(to right,{color1}, {color2});color:{color3};font-size:40px;font-weight: bold;border-radius:2%;">{content}</p>', unsafe_allow_html=True)
-example(color1,color2,color3,text)
+#def example(color1, color2, color3, content):
+#     st.markdown(f'<p style="text-align:center;background-image: linear-gradient(to right,{color1}, {color2});color:{color3};font-size:40px;font-weight: bold;border-radius:2%;">{content}</p>', unsafe_allow_html=True)
+#example(color1,color2,color3,text)
 
 #st.subheader("Aufgenommene Produkte am " + str(df["Datum"].iloc[-1]))
+
+st.markdown(f'<h1 style="color:#a6a6a6;font-size:24px;">{"Aufgenommene Produkte am " + str(df["Datum"].iloc[-1])}</h1>', unsafe_allow_html=True)
 st.plotly_chart(fig7, use_container_width=True)
         
 
