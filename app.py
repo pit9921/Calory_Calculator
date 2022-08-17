@@ -132,7 +132,7 @@ total_kal_per = ((Total_Kalorien / 2879 ) * 100).round(1)
 
 
 labels = ['Kalorien', 'noch aufnehmen']
-values = [Total_Kalorien, (3079 -Total_Kalorien) ]
+values = [Total_Kalorien, (2879 -Total_Kalorien) ]
 colors = ['#a6a6a6', '#f6f6f6']
 
 # Use `hole` to create a donut-like pie chart
@@ -230,7 +230,7 @@ df8 = df8[['Produkt','Menge','Kalorien']]
 
 st.set_page_config(
     page_title="Kalorienverbrauch App",
-    page_icon="✅",
+    page_icon="🍏",
     layout="wide",
 )
 
@@ -265,7 +265,7 @@ def example(color1, color2, color3, content):
      st.markdown(f'<p style="text-align:center;background-image: linear-gradient(to right,{color1}, {color2});color:{color3};font-size:40px;font-weight: bold;border-radius:2%;">{content}</p>', unsafe_allow_html=True)
 example(color1,color2,color3,text)
 
-st.markdown("""---""") 
+#st.markdown("""---""") 
 #st.markdown("##")
 
 
