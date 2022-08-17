@@ -255,7 +255,7 @@ with open('style.css') as f:
 
 
 
-color1 = "#FF0000"
+color1 = "#a6a6a6"
 color2 = "#F67280"
 color3 = "#ffffff"
 
