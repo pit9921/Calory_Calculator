@@ -221,7 +221,11 @@ fig3.update_layout({
 'paper_bgcolor': 'rgba(0, 0, 0, 0)',
 })
 
-
+fig3.update_layout(
+    font_color="#a6a6a6",
+    title_font_color="#a6a6a6",
+    legend_title_font_color="#a6a6a6"
+)
 
 # %%
 # get overview table of the last day
