@@ -255,7 +255,16 @@ with open('style.css') as f:
 
 
 
-st.title(":pizza: Kalorienverbrauch")
+color1 = "#FF0000"
+color2 = "#F67280"
+color3 = "#ffffff"
+
+text="Calory_Calculator"
+
+def example(color1, color2, color3, content):
+     st.markdown(f'<p style="text-align:center;background-image: linear-gradient(to right,{color1}, {color2});color:{color3};font-size:40px;font-weight: bold;border-radius:2%;">{content}</p>', unsafe_allow_html=True)
+example(color1,color2,color3,text)
+
 st.markdown("""---""") 
 #st.markdown("##")
 
@@ -284,7 +293,7 @@ else:
     st.table(filtered_df)
 
 st.markdown("#")
-
+st.markdown("#")
 
 # create blank space between objects
 
@@ -297,7 +306,7 @@ st.plotly_chart(fig1, use_container_width=True)
 
 st.markdown('#')  
 
-st.subheader("Aufgenommene Produkte" + str(df["Datum"].iloc[-1]))
+st.subheader("Aufgenommene Produkte am " + str(df["Datum"].iloc[-1]))
 st.table(df8)
         
 
