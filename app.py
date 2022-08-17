@@ -176,6 +176,12 @@ fig1.update_layout({
 'paper_bgcolor': 'rgba(0, 0, 0, 0)',
 })
 
+fig1.update_layout(
+    font_color="#a6a6a6",
+    title_font_color="#a6a6a6",
+    legend_title_font_color="#a6a6a6"
+)
+
 # %%
 Total_Protein = today_data['Protein'].sum()
 Total_Kohlehydrate = today_data['Kohlehydrate'].sum()
