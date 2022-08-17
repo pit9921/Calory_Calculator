@@ -182,6 +182,11 @@ fig1.update_layout(
     legend_title_font_color="#a6a6a6"
 )
 
+fig1.update_layout(
+    margin=dict(l=60, r=30, t=50, b=80),
+#    paper_bgcolor="LightSteelBlue",
+)
+
 # %%
 Total_Protein = today_data['Protein'].sum()
 Total_Kohlehydrate = today_data['Kohlehydrate'].sum()
@@ -227,6 +232,11 @@ fig3.update_layout(
     legend_title_font_color="#a6a6a6"
 )
 
+fig3.update_layout(
+    margin=dict(l=1, r=1, t=1, b=1),
+#    paper_bgcolor="LightSteelBlue",
+)
+
 # %%
 # get overview table of the last day
 names = [df["Datum"].iloc[-1]]
@@ -242,7 +252,7 @@ rowEvenColor = 'lightgrey'
 rowOddColor = 'white'
 
 fig7 = go.Figure(data=[go.Table(
-    columnwidth = [80,50,60],
+#    columnwidth = [80,50,60],
     header=dict(values=list(df8.columns),
                 line_color='darkslategray',
                 fill_color=headerColor,
@@ -258,6 +268,10 @@ fig7 = go.Figure(data=[go.Table(
                ))
 ])
 
+fig7.update_layout(
+    margin=dict(l=1, r=1, t=1, b=1),
+#    paper_bgcolor="LightSteelBlue",
+)
 
 #fig7.show()
 
@@ -310,7 +324,7 @@ example(color1,color2,color3,text)
 
 ######### Hide row indices with st.table #######################
 # CSS to inject contained in a string
-hide_table_row_index = """
+hide_dataframe_row_index = """
             <style>
             thead tr th:first-child {display:none}
             tbody th {display:none}
@@ -318,7 +332,9 @@ hide_table_row_index = """
             """
 
 # Inject CSS with Markdown
-st.markdown(hide_table_row_index, unsafe_allow_html=True)
+st.markdown(hide_dataframe_row_index, unsafe_allow_html=True)
+
+
 #################################################################
 
 #st.subheader("Fehlende Eingaben:")
@@ -333,6 +349,7 @@ else:
 # create blank space between objects
 
 st.plotly_chart(fig, use_container_width=True)
+st.markdown('#')  
 st.plotly_chart(fig3, use_container_width=True)
 
 st.markdown('#')  
@@ -351,8 +368,11 @@ st.markdown('#')
 #st.subheader("Aufgenommene Produkte am " + str(df["Datum"].iloc[-1]))
 
 st.markdown(f'<h1 style="color:#a6a6a6;font-size:24px;">{"Aufgenommene Produkte am " + str(df["Datum"].iloc[-1])}</h1>', unsafe_allow_html=True)
-#st.plotly_chart(fig7, use_container_width=True)
-st.dataframe(df8)         
+st.plotly_chart(fig7, use_container_width=True)
+#st.dataframe(df8)         
+
+
+
 
 # Remove “Made with Streamlit” from bottom of app
 hide_streamlit_style = """
