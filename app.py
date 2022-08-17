@@ -242,6 +242,7 @@ rowEvenColor = 'lightgrey'
 rowOddColor = 'white'
 
 fig7 = go.Figure(data=[go.Table(
+    columnwidth = [80,50,60],
     header=dict(values=list(df8.columns),
                 line_color='darkslategray',
                 fill_color=headerColor,
@@ -256,6 +257,7 @@ fig7 = go.Figure(data=[go.Table(
                 font = dict(color = 'darkslategray', size = 14)
                ))
 ])
+
 
 #fig7.show()
 
