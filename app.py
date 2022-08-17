@@ -330,9 +330,6 @@ else:
     st.error("Folgende Gerichte **müssen** noch vor der Auswertung in der Datenbank **gepflegt werden!**")
     st.table(filtered_df)
 
-st.markdown("#")
-st.markdown("#")
-
 # create blank space between objects
 
 st.plotly_chart(fig, use_container_width=True)
