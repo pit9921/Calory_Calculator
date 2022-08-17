@@ -351,8 +351,8 @@ st.markdown('#')
 #st.subheader("Aufgenommene Produkte am " + str(df["Datum"].iloc[-1]))
 
 st.markdown(f'<h1 style="color:#a6a6a6;font-size:24px;">{"Aufgenommene Produkte am " + str(df["Datum"].iloc[-1])}</h1>', unsafe_allow_html=True)
-st.plotly_chart(fig7, use_container_width=True)
-        
+#st.plotly_chart(fig7, use_container_width=True)
+st.dataframe(df8)         
 
 # Remove “Made with Streamlit” from bottom of app
 hide_streamlit_style = """
