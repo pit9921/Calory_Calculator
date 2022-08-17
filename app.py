@@ -255,9 +255,9 @@ with open('style.css') as f:
 
 
 
-color1 = "#a6a6a6"
-color2 = "#F67280"
-color3 = "#ffffff"
+color1 = "#FFFFFF"
+color2 = "#FFFFFF"
+color3 = "#a6a6a6"
 
 text="Calory_Calculator"
 
