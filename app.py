@@ -136,7 +136,7 @@ values = [Total_Kalorien, (2879 -Total_Kalorien) ]
 colors = ['#a6a6a6', '#f6f6f6']
 
 # Use `hole` to create a donut-like pie chart
-fig = go.Figure(data=[go.Pie(labels=labels, values=values, 
+fig = go.Figure(data=[go.Pie(labels=labels, values=values, direction='clockwise', sort=False,
                              rotation=180, hole=.7)])
 
 fig.update_traces(hoverinfo='label', textfont_size=12,
@@ -232,6 +232,32 @@ fig3.update_layout(
 names = [df["Datum"].iloc[-1]]
 df8 = df[df.Datum.isin(names)]
 df8 = df8[['Produkt','Menge','Kalorien']]
+df8 = df8.round(1)
+
+# %%
+import plotly.graph_objects as go
+
+headerColor = 'grey'
+rowEvenColor = 'lightgrey'
+rowOddColor = 'white'
+
+fig7 = go.Figure(data=[go.Table(
+    header=dict(values=list(df8.columns),
+                line_color='darkslategray',
+                fill_color=headerColor,
+                align=['left','center'],
+                font=dict(color='white', size=18)
+                ),
+    cells=dict(values=df8.transpose().values.tolist(),
+                line_color='darkslategray',
+                # 2-D list of colors for alternating rows
+                fill_color = [[rowOddColor,rowEvenColor,rowOddColor, rowEvenColor,rowOddColor]*5],
+                align = ['left', 'center'],
+                font = dict(color = 'darkslategray', size = 14)
+               ))
+])
+
+#fig7.show()
 
 # %%
 # ---- MAINPAGE ----
@@ -316,8 +342,15 @@ st.plotly_chart(fig1, use_container_width=True)
 
 st.markdown('#')  
 
-st.subheader("Aufgenommene Produkte am " + str(df["Datum"].iloc[-1]))
-st.table(df8)
+
+text="Aufgenommene Produkte am " + str(df["Datum"].iloc[-1])
+
+def example(color1, color2, color3, content):
+     st.markdown(f'<p style="text-align:center;background-image: linear-gradient(to right,{color1}, {color2});color:{color3};font-size:40px;font-weight: bold;border-radius:2%;">{content}</p>', unsafe_allow_html=True)
+example(color1,color2,color3,text)
+
+#st.subheader("Aufgenommene Produkte am " + str(df["Datum"].iloc[-1]))
+st.plotly_chart(fig7, use_container_width=True)
         
 
 # Remove “Made with Streamlit” from bottom of app
