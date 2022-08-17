@@ -269,7 +269,7 @@ fig7 = go.Figure(data=[go.Table(
 ])
 
 fig7.update_layout(
-    margin=dict(l=1, r=1, t=1, b=1),
+    margin=dict(l=1, r=1, t=20, b=1),
 #    paper_bgcolor="LightSteelBlue",
 )
 
