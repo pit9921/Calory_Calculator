@@ -143,7 +143,7 @@ fig.update_traces(hoverinfo='label', textfont_size=12,
                   marker=dict(colors=colors))
 
 
-fig.update_layout(margin=dict(t=0, b=0, l=0, r=0))
+fig.update_layout(margin=dict(t=0, b=0, l=20, r=20))
 fig.update_traces(textinfo='none')
 
 fig.update_layout(
@@ -186,6 +186,16 @@ fig1.update_layout(
     margin=dict(l=60, r=30, t=50, b=80),
 #    paper_bgcolor="LightSteelBlue",
 )
+
+fig1.update_layout(
+    xaxis=dict(
+        fixedrange=True
+    ),
+    yaxis=dict(
+        fixedrange=True
+    )
+)
+
 
 # %%
 Total_Protein = today_data['Protein'].sum()
@@ -233,8 +243,17 @@ fig3.update_layout(
 )
 
 fig3.update_layout(
-    margin=dict(l=1, r=1, t=1, b=1),
+    margin=dict(l=20, r=20, t=1, b=1),
 #    paper_bgcolor="LightSteelBlue",
+)
+
+fig3.update_layout(
+    xaxis=dict(
+        fixedrange=True
+    ),
+    yaxis=dict(
+        fixedrange=True
+    )
 )
 
 # %%
@@ -274,6 +293,22 @@ fig7.update_layout(
 )
 
 #fig7.show()
+
+# %%
+import plotly.figure_factory as ff
+colorscale = [[0, '#a6a6a6'],[.5, '#f6f6f6'],[1, '#ffffff']]
+table = ff.create_table(df8, colorscale=colorscale)
+
+table.update_layout(
+    xaxis=dict(
+        fixedrange=True
+    ),
+    yaxis=dict(
+        fixedrange=True
+    )
+)
+
+#table.show()
 
 # %%
 # ---- MAINPAGE ----
@@ -349,7 +384,6 @@ else:
 # create blank space between objects
 
 st.plotly_chart(fig, use_container_width=True)
-st.markdown('#')  
 st.plotly_chart(fig3, use_container_width=True)
 
 st.markdown('#')  
@@ -367,8 +401,16 @@ st.markdown('#')
 
 #st.subheader("Aufgenommene Produkte am " + str(df["Datum"].iloc[-1]))
 
-st.markdown(f'<h1 style="color:#a6a6a6;font-size:24px;">{"Aufgenommene Produkte am " + str(df["Datum"].iloc[-1])}</h1>', unsafe_allow_html=True)
-st.plotly_chart(fig7, use_container_width=True)
+#st.markdown(f'<h1 style="color:#a6a6a6;font-size:24px;">{"Aufgenommene Produkte am " + str(df["Datum"].iloc[-1])}</h1>', unsafe_allow_html=True)
+
+text=str(df["Datum"].iloc[-1])
+
+def example(color1, color2, color3, content):
+     st.markdown(f'<p style="text-align:left;background-image: linear-gradient(to right,{color1}, {color2});color:{color3};font-size:40px;font-weight: bold;border-radius:2%;">{content}</p>', unsafe_allow_html=True)
+example(color1,color2,color3,text)
+
+
+st.plotly_chart(table, use_container_width=True)
 #st.dataframe(df8)         
 
 
