@@ -130,30 +130,58 @@ today_data = today_data.round(1)
 Total_Kalorien= today_data['Kalorien'].sum()
 total_kal_per = ((Total_Kalorien / 2879 ) * 100).round(1)
 
+if Total_Kalorien < 2879:
 
-labels = ['Kalorien', 'noch aufnehmen']
-values = [Total_Kalorien, (2879 -Total_Kalorien) ]
-colors = ['#a6a6a6', '#f6f6f6']
+    labels = ['Kalorien', 'noch aufnehmen']
+    values = [Total_Kalorien, (2879 -Total_Kalorien) ]
+    colors = ['#a6a6a6', '#f6f6f6']
 
-# Use `hole` to create a donut-like pie chart
-fig = go.Figure(data=[go.Pie(labels=labels, values=values, direction='clockwise', sort=False,
-                             rotation=180, hole=.7)])
+    # Use `hole` to create a donut-like pie chart
+    fig = go.Figure(data=[go.Pie(labels=labels, values=values, direction='clockwise', sort=False,
+                                 rotation=180, hole=.7)])
 
-fig.update_traces(hoverinfo='label', textfont_size=12,
-                  marker=dict(colors=colors))
+    fig.update_traces(hoverinfo='label', textfont_size=12,
+                      marker=dict(colors=colors))
 
 
-fig.update_layout(margin=dict(t=0, b=0, l=20, r=20))
-fig.update_traces(textinfo='none')
+    fig.update_layout(margin=dict(t=0, b=0, l=20, r=20), dragmode=False)
+    fig.update_traces(textinfo='none')
 
-fig.update_layout(
-        # Add annotations in the center of the donut pies.
-        annotations=[dict(text=str(total_kal_per) + "%", x=0.5, y=0.52, font_size=40, font_color="#5d64bf", showarrow=False),
-                    dict(text=str(Total_Kalorien) + " kcal", x=0.5, y=0.46, font_size=14, font_color="#5d64bf", showarrow=False)])
+    fig.update_layout(
+            # Add annotations in the center of the donut pies.
+            annotations=[dict(text=str(total_kal_per) + "%", x=0.5, y=0.52, font_size=40, font_color="#5d64bf", showarrow=False),
+                        dict(text=str(Total_Kalorien) + " kcal", x=0.5, y=0.46, font_size=14, font_color="#5d64bf", showarrow=False)])
 
-fig.update_layout(showlegend=False)
+    fig.update_layout(showlegend=False)
 
-#fig.show()
+    #fig.show()
+
+else:
+    
+    labels = ['Kalorien', 'noch aufnehmen']
+    values = [Total_Kalorien, 0 ]
+    colors = ['#a6a6a6', '#f6f6f6']
+
+    # Use `hole` to create a donut-like pie chart
+    fig = go.Figure(data=[go.Pie(labels=labels, values=values, direction='clockwise', sort=False,
+                                 rotation=180, hole=.7)])
+
+    fig.update_traces(hoverinfo='label', textfont_size=12,
+                      marker=dict(colors=colors))
+
+
+    fig.update_layout(margin=dict(t=0, b=0, l=20, r=20), dragmode=False)
+    fig.update_traces(textinfo='none')
+
+    fig.update_layout(
+            # Add annotations in the center of the donut pies.
+            annotations=[dict(text=str(total_kal_per) + "%", x=0.5, y=0.52, font_size=40, font_color="#5d64bf", showarrow=False),
+                        dict(text=str(Total_Kalorien) + " kcal", x=0.5, y=0.46, font_size=14, font_color="#5d64bf", showarrow=False)])
+
+    fig.update_layout(showlegend=False)
+
+    #fig.show()
+    
 
 # %%
 # Weight
@@ -183,18 +211,25 @@ fig1.update_layout(
 )
 
 fig1.update_layout(
-    margin=dict(l=60, r=30, t=50, b=80),
+    margin=dict(l=60, r=30, t=50, b=80)
 #    paper_bgcolor="LightSteelBlue",
 )
 
+fig1.update_layout(dragmode=False)
+
 fig1.update_layout(
     xaxis=dict(
-        fixedrange=True
+        fixedrange=True, 
     ),
     yaxis=dict(
         fixedrange=True
     )
 )
+
+
+fig1.show(config={
+    'modeBarButtonsToRemove': ['lasso2d', 'select']
+})
 
 
 # %%
@@ -243,9 +278,11 @@ fig3.update_layout(
 )
 
 fig3.update_layout(
-    margin=dict(l=20, r=20, t=1, b=1),
+    margin=dict(l=20, r=20, t=1, b=1), 
 #    paper_bgcolor="LightSteelBlue",
 )
+
+fig3.update_layout(dragmode=False)
 
 fig3.update_layout(
     xaxis=dict(
